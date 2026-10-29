@@ -21,8 +21,10 @@ IF(CMAKE_VERSION VERSION_GREATER_EQUAL 3.16.0)
 endif()
 
 # Add public include directories that propagate to dependent targets
+file(RELATIVE_PATH OpenMVS_INSTALL_INCLUDE_RELDIR "${CMAKE_INSTALL_PREFIX}" "${INSTALL_INCLUDE_DIR}")
 target_include_directories(Common PUBLIC
 	$<BUILD_INTERFACE:${CMAKE_BINARY_DIR}>
+	$<INSTALL_INTERFACE:${OpenMVS_INSTALL_INCLUDE_RELDIR}>
 )
 
 # Link its dependencies with PUBLIC visibility so they propagate

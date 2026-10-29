@@ -12,5 +12,4 @@ cxx_executable_with_flags(Tests "Apps" "${cxx_default}" "MVS" ${LIBRARY_FILES_C}
 
 # Install
 INSTALL(TARGETS Tests
-	EXPORT OpenMVSTargets
 	RUNTIME DESTINATION "${INSTALL_BIN_DIR}" COMPONENT bin)
