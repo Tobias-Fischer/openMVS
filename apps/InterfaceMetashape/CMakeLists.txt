@@ -6,7 +6,8 @@ else()
 endif()
 FILE(GLOB LIBRARY_FILES_H "*.h" "*.inl")
 
-cxx_executable_with_flags(InterfaceMetashape "Apps" "${cxx_default}" "MVS" ${LIBRARY_FILES_C} ${LIBRARY_FILES_H})
+FIND_PACKAGE(tinyxml2 CONFIG REQUIRED)
+cxx_executable_with_flags(InterfaceMetashape "Apps" "${cxx_default}" "MVS;tinyxml2::tinyxml2" ${LIBRARY_FILES_C} ${LIBRARY_FILES_H})
 
 # Install
 INSTALL(TARGETS InterfaceMetashape

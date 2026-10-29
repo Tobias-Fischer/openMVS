@@ -41,8 +41,8 @@
 #define TINYGLTF_NO_INCLUDE_STB_IMAGE
 #define TINYGLTF_NO_INCLUDE_STB_IMAGE_WRITE
 // #define TINYGLTF_IMPLEMENTATION
-#include "../IO/json.hpp"
-#include "../IO/tiny_gltf.h"
+#include <nlohmann/json.hpp>
+#include <tiny_gltf.h>
 
 using namespace MVS;
 

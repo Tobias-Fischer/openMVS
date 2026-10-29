@@ -60,8 +60,8 @@
 #define TINYGLTF_NO_INCLUDE_STB_IMAGE
 #define TINYGLTF_NO_INCLUDE_STB_IMAGE_WRITE
 #define TINYGLTF_IMPLEMENTATION
-#include "../IO/json.hpp"
-#include "../IO/tiny_gltf.h"
+#include <nlohmann/json.hpp>
+#include <tiny_gltf.h>
 
 using namespace MVS;
 
@@ -1825,15 +1825,17 @@ bool Mesh::SaveGLTF(const String& fileName, bool bBinary) const
 
 	// setup GLTF
 	struct Tools {
+		// tinygltf >= 2.6 callback: the URI is returned through out_uri
 		static bool WriteImageData(const std::string *basepath, const std::string *filename,
-			tinygltf::Image *image, bool embedImages, void *) {
+			const tinygltf::Image *image, bool embedImages, const tinygltf::FsCallbacks *,
+			const tinygltf::URICallbacks *, std::string *out_uri, void *) {
 			ASSERT(!embedImages);
-			image->uri = Util::isFullPath(filename->c_str()) ?
+			*out_uri = Util::isFullPath(filename->c_str()) ?
 				Util::getRelativePath(*basepath, *filename) : String(*filename);
 			String basePath(*basepath);
 			return SaveImage(
-				cv::Mat(image->height, image->width, CV_8UC3, image->image.data()),
-				Util::ensureFolderSlash(basePath) + image->uri);
+				cv::Mat(image->height, image->width, CV_8UC3, const_cast<unsigned char*>(image->image.data())),
+				Util::ensureFolderSlash(basePath) + *out_uri);
 		}
 	};
 	tinygltf::TinyGLTF gltf;
