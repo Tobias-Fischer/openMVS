@@ -1435,8 +1435,11 @@ void DepthMapsData::FuseDepthMaps(PointCloud& pointcloud, bool bEstimateColor, b
 		totalNumImageNeighborsInCache += numImageNeighborsInCache;
 		totalNumImagesInCache += numImagesInCache;
 		// fuse depth-map
-		cacheDMaps.UseImage(idxImage);
+		// protect the reference before loading it: UseImage() ejects the least recently
+		// used depth-maps to fit the memory budget, which would otherwise include the
+		// reference itself when the budget is smaller than one depth-map
 		cacheDMaps.SkipMemoryCheckIdxImage(idxImage);
+		cacheDMaps.UseImage(idxImage);
 		const DepthData& depthData(arrDepthData[idxImage]);
 		ASSERT(depthData.GetView().GetLocalID(scene.images) == idxImage);
 		ASSERT(!depthData.IsEmpty());
@@ -1770,8 +1773,11 @@ void DepthMapsData::DenseFuseDepthMaps(PointCloud& pointcloud, bool bEstimateCol
 		totalNumImagesInCache += numImagesInCache;
 		++numDMapsFused;
 		// fuse depth-map
-		cacheDMaps.UseImage(idxImage);
+		// protect the reference before loading it: UseImage() ejects the least recently
+		// used depth-maps to fit the memory budget, which would otherwise include the
+		// reference itself when the budget is smaller than one depth-map
 		cacheDMaps.SkipMemoryCheckIdxImage(idxImage);
+		cacheDMaps.UseImage(idxImage);
 		const DepthData& depthData(arrDepthData[idxImage]);
 		ASSERT(depthData.GetView().GetLocalID(scene.images) == idxImage);
 		ASSERT(!depthData.IsEmpty());
