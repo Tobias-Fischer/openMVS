@@ -33,6 +33,7 @@
 #include "Scene.h"
 #include "SceneDensify.h"
 #include "PatchMatchCUDA.h"
+#include "PatchMatchMetal.h"
 #include "DMapCache.h"
 
 using namespace MVS;
@@ -51,6 +52,10 @@ using namespace MVS;
 
 
 // S T R U C T S ///////////////////////////////////////////////////
+
+#ifdef _USE_METAL
+int MVS::METAL::desiredDeviceID = -1;
+#endif // _USE_METAL
 
 DEFINE_LOG_NAME(lt, _T("ScnDense"));
 
@@ -515,6 +520,12 @@ bool DepthMapsData::EstimateDepthMap(IIndex idxImage, int nGeometricIter)
 		return true;
 	}
 	#endif // _USE_CUDA
+	#ifdef _USE_METAL
+	if (pmMetal) {
+		pmMetal->EstimateDepthMap(arrDepthData[idxImage]);
+		return true;
+	}
+	#endif // _USE_METAL
 
 	TD_TIMER_STARTD();
 
@@ -2110,6 +2121,18 @@ bool Scene::ComputeDepthMaps(DenseDepthMapData& data)
 			data.depthMaps.pmCUDA->Init(false);
 	}
 	#endif // _USE_CUDA
+	#ifdef _USE_METAL
+	// initialize Metal
+	if (MVS::METAL::desiredDeviceID >= -1 && data.nFusionMode >= 0) {
+		data.depthMaps.pmMetal = new MVS::METAL::PatchMatch();
+		if (!data.depthMaps.pmMetal->IsValid()) {
+			data.depthMaps.pmMetal.Release();
+		} else {
+			data.depthMaps.pmMetal->Init(false);
+			VERBOSE("Using Metal compute backend for depth-map estimation");
+		}
+	}
+	#endif // _USE_METAL
 
 	// initialize the queue of images to be processed
 	const int nOptimize(OPTDENSE::nOptimize);
@@ -2145,6 +2168,12 @@ bool Scene::ComputeDepthMaps(DenseDepthMapData& data)
 			data.depthMaps.pmCUDA->Init(true);
 		}
 		#endif // _USE_CUDA
+		#ifdef _USE_METAL
+		if (data.depthMaps.pmMetal && OPTDENSE::nEstimationGeometricIters) {
+			data.depthMaps.pmMetal->Release();
+			data.depthMaps.pmMetal->Init(true);
+		}
+		#endif // _USE_METAL
 		while (++data.nEstimationGeometricIter < (int)OPTDENSE::nEstimationGeometricIters) {
 			// initialize the queue of images to be geometric processed
 			if (data.nEstimationGeometricIter+1 == (int)OPTDENSE::nEstimationGeometricIters)

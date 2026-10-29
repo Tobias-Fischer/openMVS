@@ -49,6 +49,13 @@ namespace CUDA {
 class PatchMatch;
 } // namespace CUDA
 #endif // _USE_CUDA
+#ifdef _USE_METAL
+namespace METAL {
+class PatchMatch;
+// Metal device for depth-map estimation (-2 - CPU processing, -1 - default GPU)
+extern MVS_API int desiredDeviceID;
+} // namespace METAL
+#endif // _USE_METAL
 
 // structure used to compute all depth-maps
 class MVS_API DepthMapsData
@@ -95,6 +102,10 @@ public:
 	// used internally to estimate the depth-maps using CUDA
 	CAutoPtr<MVS::CUDA::PatchMatch> pmCUDA;
 	#endif // _USE_CUDA
+	#ifdef _USE_METAL
+	// used internally to estimate the depth-maps using Metal
+	CAutoPtr<MVS::METAL::PatchMatch> pmMetal;
+	#endif // _USE_METAL
 };
 /*----------------------------------------------------------------*/
 

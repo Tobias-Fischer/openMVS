@@ -119,6 +119,9 @@ bool Application::Initialize(size_t argc, LPCTSTR* argv)
 		#ifdef _USE_CUDA
 		("cuda-device", boost::program_options::value(&SEACAVE::CUDA::desiredDeviceID)->default_value(-1), "CUDA device number to be used for depth-map estimation (-2 - CPU processing, -1 - best GPU, >=0 - device index)")
 		#endif
+		#ifdef _USE_METAL
+		("gpu-device", boost::program_options::value(&MVS::METAL::desiredDeviceID)->default_value(-1), "Metal device for depth-map estimation (-2 - CPU processing, -1 - default GPU)")
+		#endif
 		;
 
 	// group of options allowed both on command line and in config file
