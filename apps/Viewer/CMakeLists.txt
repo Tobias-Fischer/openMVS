@@ -99,8 +99,11 @@ if(LINUX)
 	# to the installed binary location (prefix + install bin dir). Install the
 	# resulting .desktop file into share/applications so desktop environments pick it up.
 	set(DESKTOP_IN "${CMAKE_CURRENT_SOURCE_DIR}/templates/openMVS-Viewer.desktop.in")
-	set(EXEC_PATH "${CMAKE_INSTALL_PREFIX}/${INSTALL_BIN_DIR}/${VIEWER_NAME}")
-	get_filename_component(ICON_NAME "${CMAKE_CURRENT_SOURCE_DIR}/Viewer.svg" NAME_WE)
+	# INSTALL_BIN_DIR is already absolute (see ConfigLibrary)
+	set(EXEC_PATH "${INSTALL_BIN_DIR}/${VIEWER_NAME}")
+	# the icon is installed under the viewer's name (VIEWER_NAME), so a renamed
+	# viewer does not install a generic Viewer.svg
+	set(ICON_NAME "${VIEWER_NAME}")
 	# Register both .mvs and .dmap MIME types so desktop environments treat
 	# both as owned by the OpenMVS Viewer. openmvs-mime.xml.in defines both
 	# application/x-openmvs-mvs and application/x-openmvs-dmap.
@@ -110,7 +113,8 @@ if(LINUX)
 		DESTINATION "share/applications" COMPONENT desktop)
 	# Install an SVG icon into hicolor icon theme (scalable) if present
 	INSTALL(FILES "${CMAKE_CURRENT_SOURCE_DIR}/Viewer.svg"
-		DESTINATION "share/icons/hicolor/scalable/apps" COMPONENT desktop)
+		DESTINATION "share/icons/hicolor/scalable/apps" COMPONENT desktop
+		RENAME "${ICON_NAME}.svg")
 	# Install shared-mime-info XML so the system knows about .mvs files, then
 	# update the MIME database so the desktop file association works immediately.
 	set(MIME_IN "${CMAKE_CURRENT_SOURCE_DIR}/templates/openmvs-mime.xml.in")
@@ -127,8 +131,8 @@ endif()
 if(WIN32)
 	# Configure a Windows registry template for packagers/installers (manual import)
 	set(REG_IN "${CMAKE_CURRENT_SOURCE_DIR}/templates/Viewer-fileassoc.reg.in")
-	configure_file(${REG_IN} ${CMAKE_CURRENT_BINARY_DIR}/Viewer-fileassoc.reg @ONLY)
-	INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/Viewer-fileassoc.reg"
+	configure_file(${REG_IN} ${CMAKE_CURRENT_BINARY_DIR}/${VIEWER_NAME}-fileassoc.reg @ONLY)
+	INSTALL(FILES "${CMAKE_CURRENT_BINARY_DIR}/${VIEWER_NAME}-fileassoc.reg"
 	    DESTINATION "share/doc/${VIEWER_NAME}" COMPONENT doc)
 endif()
 
