@@ -30,6 +30,9 @@
 // CERES optimization library
 #cmakedefine _USE_CERES
 
+// IBFS max-flow solver (research-only license)
+#cmakedefine _USE_IBFS
+
 // JPEG codec
 #cmakedefine _USE_JPG
 

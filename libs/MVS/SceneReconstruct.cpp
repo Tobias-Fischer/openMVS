@@ -55,9 +55,11 @@ using namespace MVS;
 // uncomment to enable reconstruction algorithm of weakly supported surfaces
 #define DELAUNAY_WEAKSURF
 
-// uncomment to use IBFS algorithm for max-flow
-// (faster, but not clear license policy)
+// use IBFS algorithm for max-flow (OpenMVS_USE_IBFS)
+// (faster, but not clear license policy); otherwise Boost's Boykov-Kolmogorov
+#ifdef _USE_IBFS
 #define DELAUNAY_MAXFLOW_IBFS
+#endif
 
 #pragma push_macro("VERBOSE")
 #undef VERBOSE
