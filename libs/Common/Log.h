@@ -42,7 +42,7 @@ namespace SEACAVE {
 
 class GENERAL_API Log
 {
-	DECLARE_SINGLETON(Log);
+	DEFINE_SINGLETON(Log);
 
 public:
 	typedef uint32_t Idx;
@@ -151,7 +151,7 @@ protected:
 
 class GENERAL_API LogFile
 {
-	DECLARE_SINGLETON(LogFile);
+	DEFINE_SINGLETON(LogFile);
 
 public:
 	~LogFile() { Close(); }
@@ -174,7 +174,7 @@ protected:
 
 class GENERAL_API LogConsole
 {
-	DECLARE_SINGLETON(LogConsole);
+	DEFINE_SINGLETON(LogConsole);
 
 public:
 	~LogConsole() { Close(); }

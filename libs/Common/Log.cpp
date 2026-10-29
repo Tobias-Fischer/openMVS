@@ -27,6 +27,14 @@ Log::LogType Log::g_appType;
 /**
  * Constructor
  */
+// defined here (not inline in the header) so that the instance is unique
+// across shared libraries
+Log& Log::GetInstance()
+{
+	static Log instance;
+	return instance;
+}
+
 Log::Log()
 {
 	// generate default log type
@@ -169,6 +177,14 @@ void Log::_Record(Idx lt, LPCTSTR szFormat, va_list args)
 /**
  * Constructor
  */
+// defined here (not inline in the header) so that the instance is unique
+// across shared libraries
+LogFile& LogFile::GetInstance()
+{
+	static LogFile instance;
+	return instance;
+}
+
 LogFile::LogFile()
 {
 }
@@ -245,6 +261,14 @@ public:
 /**
  * Constructor
  */
+// defined here (not inline in the header) so that the instance is unique
+// across shared libraries
+LogConsole& LogConsole::GetInstance()
+{
+	static LogConsole instance;
+	return instance;
+}
+
 LogConsole::LogConsole()
 	:
 	#ifdef _USE_COSOLEFILEHANDLES
